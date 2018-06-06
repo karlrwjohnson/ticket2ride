@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+    client:
+        build: ./client
+        command: npm run dev-server
+        volumes:
+            - ./client:/opt/client
+        ports:
+            - 8000:8000
