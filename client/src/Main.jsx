@@ -1,11 +1,15 @@
-import _map from 'lodash/map';
 import React from 'react';
 import {
     root,
     boardContainer,
     board,
-    boardLocation,
+    node,
+    path,
 } from './main';
+import {
+    _find,
+    _map,
+} from './util/lodash';
 
 let id = 0;
 const DEG_90 = Math.PI / 180 * 90;
@@ -13,19 +17,19 @@ const DEG_180 = Math.PI / 180 * 180;
 const DEG_270 = Math.PI / 180 * 270;
 
 const BOARD = {
-    locations: [
+    nodes: [
         { id: (++id), x: 0.1, y: 0.2 },
         { id: (++id), x: 0.9, y: 0.2 },
         { id: (++id), x: 0.1, y: 0.8 },
     ],
     paths: [
-        { begin: 1, end: 2, markers: [
+        { id: (++id), begin: 1, end: 2, markers: [
             { id: (++id), x: 0.2, y: 0.2, rotation: 0 },
             { id: (++id), x: 0.4, y: 0.2, rotation: 0 },
             { id: (++id), x: 0.6, y: 0.2, rotation: 0 },
             { id: (++id), x: 0.8, y: 0.2, rotation: 0 },
         ] },
-        { begin: 1, end: 3, markers: [
+        { id: (++id), begin: 1, end: 3, markers: [
             { id: (++id), x: 0.1, y: 0.3, rotation: DEG_90 },
             { id: (++id), x: 0.1, y: 0.5, rotation: DEG_90 },
             { id: (++id), x: 0.1, y: 0.7, rotation: DEG_90 },
@@ -33,10 +37,11 @@ const BOARD = {
     ],
 };
 
-class Location extends React.Component {
+class Node extends React.Component {
     render() {
         const {
             props: {
+                boardSize,
                 locationData: {
                     x,
                     y,
@@ -45,7 +50,7 @@ class Location extends React.Component {
         } = this;
 
         return (
-            <circle cx={x} cy={y} r={0.02} className={boardLocation} />
+            <circle cx={x * boardSize} cy={y * boardSize} r={20} className={node} />
         );
     }
 }
@@ -54,11 +59,24 @@ class Path extends React.Component {
     render() {
         const {
             begin,
+            boardSize,
             end,
             pathData: {
                 markers,
             },
         } = this.props;
+
+        return (
+            <g>
+                <line
+                    className={path}
+                    x1={boardSize * begin.x}
+                    y1={boardSize * begin.x}
+                    x2={boardSize * begin.x}
+                    y2={boardSize * begin.x}
+                />
+            </g>
+        )
     }
 }
 
@@ -66,31 +84,24 @@ class Board extends React.Component {
     render() {
         const boardData = BOARD;
         const {
-            locations,
+            nodes,
             paths,
         } = boardData;
 
-        const SIZE = 800;
-        const scale = SIZE;
+        const boardSize = 800;
 
         return (
-            <svg className={board} width={SIZE} height={SIZE}>
-                <g transform={`scale(${SIZE}, ${SIZE})`}>
-                    <g>
-                        { _map(locations, x => <Location key={x.id} locationData={x} scale={scale} />) }
-                    </g>
-                    <g>
-                        { _map(paths, x =>
-                            <Path
-                                key={x.id}
-                                pathData={x}
-                                begin={_find(locations, { id: x.begin })}
-                                end={_find(locations, { id: x.end })}
-                                scale={scale}
-                            />
-                        ) }
-                    </g>
-                </g>
+            <svg className={board} width={boardSize} height={boardSize}>
+                { _map(nodes, x => <Node key={x.id} locationData={x} boardSize={boardSize} />) }
+                { _map(paths, x =>
+                    <Path
+                        key={x.id}
+                        pathData={x}
+                        begin={_find(nodes, { id: x.begin })}
+                        end={_find(nodes, { id: x.end })}
+                        boardSize={boardSize}
+                    />
+                ) }
             </svg>
         );
     }

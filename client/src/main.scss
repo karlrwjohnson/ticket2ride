@@ -19,5 +19,17 @@
     border: 1px solid #ccc;
 }
 
-:local(.boardLocation) {
+:local(.node) {
+    fill: #dd3;
+    stroke: #e95;
+    stroke-width: 2px;
+    cursor: pointer;
+
+    &:hover {
+        stroke-width: 5px;
+    }
+}
+
+:local(.path) {
+    stroke-width: 20px;
 }
