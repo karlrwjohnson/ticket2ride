@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     entry: {
@@ -53,6 +54,12 @@ module.exports = {
                 viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
             }
         }),
+        new webpack.DefinePlugin({
+            "process.env": {
+                //NODE_ENV: JSON.stringify("production"),
+                NODE_ENV: JSON.stringify("development"),
+            }
+        })
     ],
 
     resolve: {
@@ -62,6 +69,8 @@ module.exports = {
         ],
         extensions: ['.js', '.json', '.jsx', '.css', '.scss'],
     },
+
+    devtool: 'eval',
 
     // webpack-serve
     serve: {
