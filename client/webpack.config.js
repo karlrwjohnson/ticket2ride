@@ -34,6 +34,14 @@ module.exports = {
                     }
                 ],
             },
+            {
+                test: /\.scss?$/,
+                use: [
+                    'style-loader', // creates style nodes from JS strings
+                    'css-loader', // translates CSS into CommonJS
+                    'sass-loader', // compiles Sass to CSS
+                ],
+            },
         ],
     },
 
@@ -41,6 +49,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: path.resolve(__dirname, 'dist', 'index.html'),
             title: 'Ticket 2 Ride',
+            meta: {
+                viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
+            }
         }),
     ],
 
@@ -49,7 +60,7 @@ module.exports = {
             'node_modules',
             path.resolve(__dirname, 'src'),
         ],
-        extensions: [".js", ".json", ".jsx", ".css"],
+        extensions: ['.js', '.json', '.jsx', '.css', '.scss'],
     },
 
     // webpack-serve

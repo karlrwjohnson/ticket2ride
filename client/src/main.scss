@@ -1,0 +1,23 @@
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+
+:local(.root) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+:local(.boardContainer) {
+    flex-grow: 1;
+}
+
+
+:local(.board) {
+    border: 1px solid #ccc;
+}
+
+:local(.boardLocation) {
+}
