@@ -1,26 +1,37 @@
-:local(.board) {
-    background: #334;
-}
+:local {
 
-:local(.node) {
-    fill: #dd3;
-    stroke: #e95;
-    stroke-width: 2px;
-    cursor: pointer;
-
-    &:hover {
-        stroke-width: 5px;
+    .board {
+        background: #334;
     }
-}
 
-:local(.path) {
-    stroke: rgba(0,255,255,0.2);
-}
+    .node {
+        fill: #dd3;
+        stroke: #e95;
+        stroke-width: 2px;
+        cursor: pointer;
 
-:local(.segment) {
-    fill: white;
-}
+        &:hover {
+            stroke-width: 5px;
+        }
+    }
 
-:local(.backgroundStar) {
-    fill: rgba(255,255,255,0.7);
+    .path {
+        cursor: pointer;
+
+        .pathBackground {
+            stroke-opacity: 0.2;
+        }
+
+        .segment {
+            fill-opacity: 0.2;
+        }
+
+        &:hover .segment {
+            fill-opacity: 0.5;
+        }
+    }
+
+    .backgroundStar {
+        fill: rgba(255,255,255,0.7);
+    }
 }

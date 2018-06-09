@@ -4,14 +4,19 @@ import {
     board,
     node,
     path,
+    pathBackground,
     segment,
     backgroundStar,
 } from '../styles/board.scss';
-import {
-    _find,
-    _map,
-    _range,
-} from '../util/lodash';
+import fpMap from 'lodash/fp/map';
+import fpUpdate from 'lodash/fp/update';
+import _find from 'lodash/find';
+import _map from 'lodash/map';
+import _range from 'lodash/range';
+import { euclideanDistance } from '../util/boardGeneration';
+import { memoizeOne } from '../util/memoization';
+import { RADIANS } from '../util/moreMath';
+import { COLORS } from '../util/colors';
 
 const NODE_RADIUS_FACTOR = 1/50;
 
@@ -81,6 +86,8 @@ class Segment extends React.PureComponent {
             x: PropTypes.number,
             y: PropTypes.number,
         }),
+        color: PropTypes.string,
+        distance: PropTypes.number,
         end: PropTypes.shape({
             x: PropTypes.number,
             y: PropTypes.number,
@@ -93,25 +100,38 @@ class Segment extends React.PureComponent {
         const {
             boardSize,
             begin: { x: beginX, y: beginY },
+            color,
+            distance,
             end: { x: endX, y: endY },
             index,
             segmentCount,
         } = this.props;
 
-        const rectSize = boardSize/50;
+        const rectWidth = boardSize / 40;
+        const halfRectWidth = rectWidth / 2;
+        const borderRadius = rectWidth / 3;
+
+        const rectLength = boardSize * distance / segmentCount;
 
         const t = (index + 0.5) / segmentCount;
         const x = beginX * t + endX * (1 - t);
         const y = beginY * t + endY * (1 - t);
 
+        const angle = Math.atan2(beginY - endY, beginX - endX) * RADIANS;
+        const translateX = x * boardSize;
+        const translateY = y * boardSize;
+
         return (
             <rect
                 className={segment}
-                x={0}
-                y={0}
-                width={rectSize}
-                height={rectSize}
-                transform={`translate(${-rectSize/2 + x * boardSize}, ${-rectSize/2 + y * boardSize})`}
+                x={-rectLength / 2}
+                y={-halfRectWidth}
+                width={rectLength}
+                height={rectWidth}
+                rx={borderRadius}
+                ry={borderRadius}
+                transform={`translate(${translateX}, ${translateY}) rotate(${angle})`}
+                style={{ fill: color, stroke: color }}
             />
         );
     }
@@ -120,49 +140,55 @@ class Segment extends React.PureComponent {
 class Path extends React.PureComponent {
     static propTypes = {
         boardSize: PropTypes.number,
-        begin: PropTypes.shape({
-            x: PropTypes.number,
-            y: PropTypes.number,
-        }),
-        end: PropTypes.shape({
-            x: PropTypes.number,
-            y: PropTypes.number,
-        }),
         pathData: PropTypes.shape({
+            begin: PropTypes.shape({
+                x: PropTypes.number,
+                y: PropTypes.number,
+            }),
+            color: PropTypes.string,
+            distance: PropTypes.number,
+            end: PropTypes.shape({
+                x: PropTypes.number,
+                y: PropTypes.number,
+            }),
             segments: PropTypes.number,
         }),
     };
 
     render() {
         const {
-            begin,
             boardSize,
-            end,
             pathData: {
+                begin,
+                color,
+                distance,
+                end,
                 segments,
             },
         } = this.props;
 
         return (
-            <g>
+            <g className={path}>
                 <line
-                    className={path}
+                    className={pathBackground}
                     x1={boardSize * begin.x}
                     y1={boardSize * begin.y}
                     x2={boardSize * end.x}
                     y2={boardSize * end.y}
                     strokeWidth={boardSize / 50}
                 />
-                { _map(_range(segments), (i) =>
+                {_map(_range(segments), (i) =>
                     <Segment
                         begin={begin}
+                        color={color}
+                        distance={distance}
                         end={end}
                         key={i}
                         index={i}
                         segmentCount={segments}
                         boardSize={boardSize}
                     />
-                ) }
+                )}
             </g>
         );
     }
@@ -172,32 +198,74 @@ const PIXELS_PER_STAR = 10000;
 
 export class Board extends React.PureComponent {
     static propTypes = {
-        boardData: PropTypes.any,
+        boardData: PropTypes.shape({
+            nodes: PropTypes.arrayOf(PropTypes.shape({
+                id: PropTypes.number,
+                x: PropTypes.number,
+                y: PropTypes.number,
+            })),
+            paths: PropTypes.arrayOf(PropTypes.shape({
+                id: PropTypes.number,
+                begin_id: PropTypes.number,
+                end_id: PropTypes.number,
+                segments: PropTypes.number,
+            })),
+        }),
         size: PropTypes.number,
     };
 
+    importBoardData = memoizeOne(boardData => {
+        const { nodes } = boardData;
+        return fpUpdate('paths',
+            fpMap(pathDatum => {
+                const { begin_id, color_id, end_id } = pathDatum;
+
+                const begin = _find(nodes, { id: begin_id });
+                const end = _find(nodes, { id: end_id });
+
+                const { x: x1, y: y1 } = begin;
+                const { x: x2, y: y2 } = end;
+                const distance = euclideanDistance(x1, y1, x2, y2);
+
+                const color = COLORS[color_id];
+
+                return {
+                    ...pathDatum,
+                    begin,
+                    color,
+                    distance,
+                    end,
+                };
+            })
+        )(boardData);
+    });
+
     render() {
         const {
-            boardData: {
-                nodes = [],
-                paths = [],
-            } = {},
+            boardData,
             size,
         } = this.props;
+
+        const importedBoard = this.importBoardData(boardData);
+
+        const {
+            nodes = [],
+            paths = [],
+        } = importedBoard;
 
         return (
             <svg className={board} width={size} height={size}>
                 <Background boardSize={size} />
-                { _map(paths, x =>
+                {_map(paths, x =>
                     <Path
                         key={x.id}
                         pathData={x}
-                        begin={x.begin}
-                        end={x.end}
                         boardSize={size}
                     />
-                ) }
-                { _map(nodes, x => <Node key={x.id} locationData={x} boardSize={size} />) }
+                )}
+                {_map(nodes, x =>
+                    <Node key={x.id} locationData={x} boardSize={size} />
+                )}
             </svg>
         );
     }
