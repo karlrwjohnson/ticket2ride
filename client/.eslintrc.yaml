@@ -34,6 +34,6 @@ settings:
         - forbidExtraProps
 
 rules:
+    no-useless-computed-key: error
+    no-var: error
     semi: error
-
-

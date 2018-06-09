@@ -192,8 +192,8 @@ export class Board extends React.PureComponent {
                     <Path
                         key={x.id}
                         pathData={x}
-                        begin={_find(nodes, { id: x.begin })}
-                        end={_find(nodes, { id: x.end })}
+                        begin={x.begin}
+                        end={x.end}
                         boardSize={size}
                     />
                 ) }

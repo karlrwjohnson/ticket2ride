@@ -1,4 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+import Dimensions from '../components/Dimensions';
+import { Board } from '../components/Board';
 import {
     boardContainer,
     gameContainer,
@@ -6,22 +9,8 @@ import {
 import {
     _min,
 } from '../util/lodash';
-import Dimensions from '../components/Dimensions';
-import { Board } from '../components/Board';
-import PropTypes from 'prop-types';
+import { randomBoard } from '../util/boardGeneration';
 
-let id = 0;
-const BOARD = {
-    nodes: [
-        { id: (++id), x: 0.1, y: 0.2 },
-        { id: (++id), x: 0.9, y: 0.2 },
-        { id: (++id), x: 0.1, y: 0.8 },
-    ],
-    paths: [
-        { id: (++id), begin: 1, end: 2, segments: 4 },
-        { id: (++id), begin: 1, end: 3, segments: 3 },
-    ],
-};
 
 @Dimensions({ className: boardContainer })
 export class BoardContainer extends React.PureComponent {
@@ -57,7 +46,7 @@ export class ResourcesPane extends React.PureComponent {
 
 export class Game extends React.PureComponent {
     state = {
-        boardData: BOARD,
+        boardData: randomBoard(10),
     };
 
     render() {

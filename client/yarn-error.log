@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /opt/yarn-v1.5.1/bin/yarn.js install prop-types
+  /usr/local/bin/node /opt/yarn-v1.5.1/bin/yarn.js add d3-voroni
 
 PATH: 
   /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -22,6 +22,7 @@ npm manifest:
     "scripts": {
       "build": "webpack --mode=production",
       "dev-server": "webpack-serve",
+      "lint": "eslint src --ext=.js,.jsx",
       "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
@@ -52,7 +53,8 @@ npm manifest:
     },
     "dependencies": {
       "babel-eslint": "^8.2.3",
-      "bootstrap": "^4.1.1"
+      "bootstrap": "^4.1.1",
+      "prop-types": "^15.6.1"
     }
   }
 
@@ -6748,10 +6750,14 @@ Lockfile:
       yargs-parser "^5.0.0"
 
 Trace: 
-  Error: `install` has been replaced with `add` to add new dependencies. Run "yarn add prop-types" instead.
-      at new MessageError (/opt/yarn-v1.5.1/lib/cli.js:186:110)
-      at Object.<anonymous> (/opt/yarn-v1.5.1/lib/cli.js:21987:13)
-      at Generator.next (<anonymous>)
-      at step (/opt/yarn-v1.5.1/lib/cli.js:98:30)
-      at /opt/yarn-v1.5.1/lib/cli.js:109:13
-      at <anonymous>
+  Error: https://registry.yarnpkg.com/d3-voroni: Not found
+      at Request.params.callback [as _callback] (/opt/yarn-v1.5.1/lib/cli.js:65019:18)
+      at Request.self.callback (/opt/yarn-v1.5.1/lib/cli.js:132430:22)
+      at Request.emit (events.js:180:13)
+      at Request.<anonymous> (/opt/yarn-v1.5.1/lib/cli.js:133413:10)
+      at Request.emit (events.js:180:13)
+      at IncomingMessage.<anonymous> (/opt/yarn-v1.5.1/lib/cli.js:133333:12)
+      at Object.onceWrapper (events.js:272:13)
+      at IncomingMessage.emit (events.js:185:15)
+      at endReadableNT (_stream_readable.js:1106:12)
+      at process._tickCallback (internal/process/next_tick.js:178:19)
