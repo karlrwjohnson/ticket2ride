@@ -1,4 +1,5 @@
 const path = require('path');
+const process = require('process');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
@@ -22,7 +23,11 @@ module.exports = {
                     {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['@babel/preset-env', '@babel/preset-react'],
+                            presets: [
+                                '@babel/preset-env',
+                                '@babel/preset-react',
+                                ['@babel/preset-stage-2', { 'decoratorsLegacy': true }]
+                            ],
                         }
                     }
                 ],
@@ -70,7 +75,7 @@ module.exports = {
         extensions: ['.js', '.json', '.jsx', '.css', '.scss'],
     },
 
-    devtool: 'eval',
+    devtool: 'source-map',
 
     // webpack-serve
     serve: {
@@ -78,3 +83,7 @@ module.exports = {
         port: 8000,
     },
 };
+
+if (process.env.WEBPACK_SERVE) {
+    module.exports.mode = 'development'
+}

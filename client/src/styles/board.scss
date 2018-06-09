@@ -1,0 +1,26 @@
+:local(.board) {
+    background: #334;
+}
+
+:local(.node) {
+    fill: #dd3;
+    stroke: #e95;
+    stroke-width: 2px;
+    cursor: pointer;
+
+    &:hover {
+        stroke-width: 5px;
+    }
+}
+
+:local(.path) {
+    stroke: rgba(0,255,255,0.2);
+}
+
+:local(.segment) {
+    fill: white;
+}
+
+:local(.backgroundStar) {
+    fill: rgba(255,255,255,0.7);
+}

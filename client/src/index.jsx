@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Main from './Main';
+import Main from './controllers/Main';
 
 const div = document.createElement('div');
 document.body.appendChild(div);

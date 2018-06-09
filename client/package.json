@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --mode=production",
     "dev-server": "webpack-serve",
+    "lint": "eslint src --ext=.js,.jsx",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,8 +16,12 @@
     "@babel/core": "^7.0.0-beta.49",
     "@babel/preset-env": "^7.0.0-beta.49",
     "@babel/preset-react": "^7.0.0-beta.49",
+    "@babel/preset-stage-2": "^7.0.0-beta.49",
     "babel-loader": "^8.0.0-beta",
     "css-loader": "^0.28.11",
+    "eslint": "^4.19.1",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.9.1",
     "html-webpack-plugin": "^3.2.0",
     "lodash": "^4.17.10",
     "node-sass": "^4.9.0",
@@ -31,6 +36,8 @@
     "webpack-serve": "^1.0.2"
   },
   "dependencies": {
-    "bootstrap": "^4.1.1"
+    "babel-eslint": "^8.2.3",
+    "bootstrap": "^4.1.1",
+    "prop-types": "^15.6.1"
   }
 }
